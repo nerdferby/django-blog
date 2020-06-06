@@ -123,3 +123,10 @@ CRISPY_TEMPLATE_PACK = "bootstrap4"  # researching for beyond bootstrap
 
 LOGIN_REDIRECT_URL = "blog-home"
 LOGIN_URL = "login"
+
+EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+EMAIL_HOST = "smtp.gmail.com"
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = "scottcummins3356@gmail.com"  # Secret, should not be in production
+EMAIL_HOST_PASSWORD = "hsxbzyztmnoowsuk"  # Secret, should not be in production
