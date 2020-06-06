@@ -1,3 +1,7 @@
+"""
+Implements CRUD in views. These are native to Django
+"""
+
 from django.shortcuts import render
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from .models import Post
@@ -33,6 +37,12 @@ class PostCreateView(LoginRequiredMixin, CreateView):
     fields = ["title", "content"]
 
     def form_valid(self, form):
+        """
+        Used by CreateView to be called to verify if form is valid. This is used to
+        set the post's author to the current user
+        @param form: The form in question
+        @return: Calls the CreateView form_valid method with the adjusted form
+        """
         form.instance.author = self.request.user
         return super().form_valid(form)
 
@@ -42,6 +52,12 @@ class PostUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     fields = ["title", "content"]
 
     def form_valid(self, form):
+        """
+        Used by UpdateView to be called to verify if form is valid. This is used to
+        set the post's author to the current user
+        @param form: The form in question
+        @return: Calls the UpdateView form_valid method with the adjusted form
+        """
         form.instance.author = self.request.user
         return super().form_valid(form)
 
@@ -57,6 +73,12 @@ class PostDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
     success_url = "/"
 
     def test_func(self):
+        """
+        Required by UserPassesTestMixin. Used to determine if the user is the post's
+        author
+        @return: True if user is post's author, False if not
+        @rtype: boolean
+        """
         post = self.get_object()
         if self.request.user == post.author:
             return True

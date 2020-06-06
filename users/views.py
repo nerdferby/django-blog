@@ -5,13 +5,16 @@ from .forms import UserRegisterForm, UserUpdateForm, ProfileUpdateForm
 
 
 def register(request):
+    """
+    @param request: Required to set up the view
+    @return: Renders the form and redirects from register page to login on POST
+    """
     if request.method == "POST":
         form = UserRegisterForm(request.POST)
         if form.is_valid():
             form.save()
-            # username = form.cleaned_data.get("username")
             messages.success(
-                request, "Your account has been created! You can now log in"
+                request, "Your account has been created! You can now log in."
             )
             return redirect("login")
     else:
@@ -21,6 +24,10 @@ def register(request):
 
 @login_required
 def profile(request):
+    """
+    @param request: Required to set up the view
+    @return: Renders the profile page and updates the profile on POST
+    """
     if request.method == "POST":
         u_form = UserUpdateForm(request.POST, instance=request.user)
         p_form = ProfileUpdateForm(
@@ -29,7 +36,7 @@ def profile(request):
         if u_form.is_valid() and p_form.is_valid():
             u_form.save()
             p_form.save()
-            messages.success(request, "Your account has been updated")
+            messages.success(request, "Your account has been updated!")
             return redirect("profile")
     else:
         u_form = UserUpdateForm(instance=request.user)
