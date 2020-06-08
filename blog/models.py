@@ -29,3 +29,13 @@ class Post(models.Model):
         @return: absolute url of a post, including it's id  e.g. /post/463542/
         """
         return reverse("post-detail", kwargs={"pk": self.pk})
+
+
+class Comment(models.Model):
+    author = models.ForeignKey(User, on_delete=models.CASCADE)
+    date_posted = models.DateTimeField(default=timezone.now)
+    content = models.TextField()
+    post = models.ForeignKey(Post, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return f"{self.author}'s comment on {self.post.title}"
