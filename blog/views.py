@@ -50,8 +50,10 @@ class PostDetailView(DetailView):
 
 class PostsView(View):
     def get(self, request, pk):
-        post = Post.objects.filter(pk=pk).first()
+        # post = Post.objects.filter(pk=pk).first()
+        post = get_object_or_404(Post, pk=pk)
         comments = Paginator(Comment.objects.filter(post=post), 5)
+        likes = post.likes.all()
 
         # fixme page_num approach doesn't work consider looking at templateView and pagination
         # https://docs.djangoproject.com/en/3.0/ref/class-based-views/base/#templateview
@@ -62,14 +64,12 @@ class PostsView(View):
 
         comments = comments.page(page_num)
 
-        context = {
-            "post": post,
-            "comments": comments
-            # "comments": Post.objects.filter(pk=pk).first().comment_set.all
-        }
+        context = {"post": post, "comments": comments, "likes": likes}
+
         if request.user.is_authenticated:
             comment_form = CommentForm()
             context["comment_form"] = comment_form
+
         return render(request, "blog/post_detail.html", context)
 
     def post(self, request, pk, *args, **kwargs):

@@ -17,6 +17,13 @@
             </div>
             <h2 class="article-title">{{ post.title }}</h2>
             <p class="article-content">{{ post.content }}</p>
+            <p>
+                <a class="btn btn-primary btn-sm mr-1" href="javascript:void(0)">Like</a>{{ likes|length }} Likes<br />
+                {% for like in likes %}
+                    <small class="text-muted">{{ like.username }} liked this!</small>
+                    <br />
+                {% endfor %}
+            </p>
         </div>
     </article>
     {% if user.is_authenticated %}
