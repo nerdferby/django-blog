@@ -48,20 +48,18 @@ class PostDetailView(DetailView):
     model = Post
 
 
+# todo https://simpleisbetterthancomplex.com/tutorial/2016/08/29/how-to-work-with-ajax-request-with-django.html
+def like_handler(request, *args, **kwargs):
+    pass
+
+
 class PostsView(View):
     def get(self, request, pk):
-        # post = Post.objects.filter(pk=pk).first()
         post = get_object_or_404(Post, pk=pk)
         comments = Paginator(Comment.objects.filter(post=post), 5)
         likes = post.likes.all()
 
-        # fixme page_num approach doesn't work consider looking at templateView and pagination
-        # https://docs.djangoproject.com/en/3.0/ref/class-based-views/base/#templateview
-        page_num = self.kwargs.get("page")
-
-        if page_num is None:
-            page_num = 1
-
+        page_num = self.kwargs.get("page") or 1  # if no page number, default to 1
         comments = comments.page(page_num)
 
         context = {"post": post, "comments": comments, "likes": likes}
@@ -73,17 +71,18 @@ class PostsView(View):
         return render(request, "blog/post_detail.html", context)
 
     def post(self, request, pk, *args, **kwargs):
-        comment_form = CommentForm(request.POST)
-        comment_form.instance.author = self.request.user
-        comment_form.instance.post_id = pk
-        if comment_form.is_valid():
-            comment_form.save()
-            # context = {
-            #     "comment_form": comment_form,
-            #     "post": Post.objects.filter(pk=pk).first()
-            # }
-            # return render(request, "blog/post_detail.html", context)
-            return redirect("post-detail", pk=pk)
+        if request.user.is_authenticated:
+            comment_form = CommentForm(request.POST)
+            comment_form.instance.author = self.request.user
+            comment_form.instance.post_id = pk
+            if comment_form.is_valid():
+                comment_form.save()
+                # context = {
+                #     "comment_form": comment_form,
+                #     "post": Post.objects.filter(pk=pk).first()
+                # }
+                # return render(request, "blog/post_detail.html", context)
+                return redirect("post-detail", pk=pk)
 
 
 class PostCommentListView(ListView):

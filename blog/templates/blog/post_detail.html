@@ -26,24 +26,27 @@
             </p>
         </div>
     </article>
-    {% if user.is_authenticated %}
-        <div>
+    <div>
+        <fieldset class="form-group">
+            <legend class="border-bottom mb-4">
+                Comments ({{ post.comment_set.all|length }})
+            </legend>
+            {% if comments|length == 0 %}
+                <p>Be the first to comment. <a href="{% url 'register' %}" class="ml-1">Register</a> now!</p>
+            {% endif %}
+        </fieldset>
+        {% if user.is_authenticated %}
             <form enctype="multipart/form-data" method="POST">
                 {% csrf_token %}
-                <fieldset class="form-group">
-                    <legend class="border-bottom mb-4">
-                        Comments ({{ post.comment_set.all|length }})
-                    </legend>
-                    {{ comment_form|crispy }}
-                </fieldset>
+                {{ comment_form|crispy }}
                 <div class="form-group">
                     <button class="btn btn-outline-info" type="submit">
                         Post
                     </button>
                 </div>
             </form>
-        </div>
-    {% endif %}
+        {% endif %}
+    </div>
 
     {% for comment in comments %}
         <div class="card mb-2">
@@ -55,4 +58,5 @@
             </div>
         </div>
     {% endfor %}
+
 {% endblock content %}
