@@ -6,6 +6,7 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.auth.models import User
 from .models import Post, Comment
+from like.models import Like
 from django.views import View
 from django.views.generic import (
     ListView,
@@ -57,7 +58,7 @@ class PostsView(View):
     def get(self, request, pk):
         post = get_object_or_404(Post, pk=pk)
         comments = Paginator(Comment.objects.filter(post=post), 5)
-        likes = post.likes.all()
+        likes = Like.objects.filter(post=post).order_by("-date")
 
         page_num = self.kwargs.get("page") or 1  # if no page number, default to 1
         comments = comments.page(page_num)

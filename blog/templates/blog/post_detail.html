@@ -20,7 +20,7 @@
             <p>
                 <a class="btn btn-primary btn-sm mr-1" href="javascript:void(0)">Like</a>{{ likes|length }} Likes<br />
                 {% for like in likes %}
-                    <small class="text-muted">{{ like.username }} liked this!</small>
+                    <small class="text-muted">{{ like.user.username }} liked this!</small>
                     <br />
                 {% endfor %}
             </p>
