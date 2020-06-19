@@ -49,11 +49,6 @@ class PostDetailView(DetailView):
     model = Post
 
 
-# todo https://simpleisbetterthancomplex.com/tutorial/2016/08/29/how-to-work-with-ajax-request-with-django.html
-def like_handler(request, *args, **kwargs):
-    pass
-
-
 class PostsView(View):
     def get(self, request, pk):
         post = get_object_or_404(Post, pk=pk)
