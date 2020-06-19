@@ -55,10 +55,19 @@ class PostsView(View):
         comments = Paginator(Comment.objects.filter(post=post), 5)
         likes = Like.objects.filter(post=post).order_by("-date")
 
+        liked_by_user = (
+            Like.objects.filter(user=request.user, post=post).first() is not None
+        )
+
         page_num = self.kwargs.get("page") or 1  # if no page number, default to 1
         comments = comments.page(page_num)
 
-        context = {"post": post, "comments": comments, "likes": likes}
+        context = {
+            "post": post,
+            "comments": comments,
+            "likes": likes,
+            "liked_by_user": liked_by_user,
+        }
 
         if request.user.is_authenticated:
             comment_form = CommentForm()

@@ -18,7 +18,13 @@
             <h2 class="article-title">{{ post.title }}</h2>
             <p class="article-content">{{ post.content }}</p>
             <p>
-                <a class="btn btn-primary btn-sm mr-1" href="javascript:void(0)">Like</a>{{ likes|length }} Likes<br />
+                {% if not liked_by_user %}
+                    <a class="btn btn-primary btn-sm mr-1" href="{% url "like-post" post.id %}">Like</a>
+                {% else %}
+                    <a class="btn btn-outline-secondary btn-sm mr-1" href="{% url "unlike-post" post.id %}">Unlike</a>
+                {% endif %}
+                {{ likes|length }} Likes<br />
+
                 {% for like in likes %}
                     <small class="text-muted">{{ like.user.username }} liked this!</small>
                     <br />
@@ -32,7 +38,7 @@
                 Comments ({{ post.comment_set.all|length }})
             </legend>
             {% if comments|length == 0 %}
-                <p>Be the first to comment. <a href="{% url 'register' %}" class="ml-1">Register</a> now!</p>
+                <p>Be the first to comment.{% if not user.is_authenticated %} <a href="{% url 'register' %}" class="ml-1">Register</a> now! {% endif %}</p>
             {% endif %}
         </fieldset>
         {% if user.is_authenticated %}
